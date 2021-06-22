@@ -112,4 +112,34 @@ TEST(String, StringParsePos)
     ASSERT_EQ(chr, "chr1");
     ASSERT_EQ(start, 999);
     ASSERT_EQ(end, 1999);
+
+    chr = "-";
+    start = -1;
+    end = -1;
+
+    parsePos("chr-1", chr, start, end);
+
+    ASSERT_EQ(chr, "chr-1");
+    ASSERT_EQ(start, -1);
+    ASSERT_EQ(end, -1);
+
+    chr = "-";
+    start = -1;
+    end = -1;
+
+    parsePos("chr-1:1,000", chr, start, end);
+
+    ASSERT_EQ(chr, "chr-1");
+    ASSERT_EQ(start, 999);
+    ASSERT_EQ(end, -1);
+
+    chr = "-";
+    start = -1;
+    end = -1;
+
+    parsePos("chr-1:1,000-2,000", chr, start, end);
+
+    ASSERT_EQ(chr, "chr-1");
+    ASSERT_EQ(start, 999);
+    ASSERT_EQ(end, 1999);
 }

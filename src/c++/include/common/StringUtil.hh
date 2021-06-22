@@ -156,7 +156,7 @@ namespace stringutil
     static inline void parsePos(std::string input, std::string& chr, int64_t& start, int64_t& end)
     {
         std::vector<std::string> spl;
-        split(input, spl, " :-");
+        split(input, spl, " :");
 
         if (spl.size() >= 1)
         {
@@ -164,11 +164,13 @@ namespace stringutil
         }
         if (spl.size() >= 2)
         {
-            start = std::stoll(replaceAll(spl[1], ",", "")) - 1;
-        }
-        if (spl.size() >= 3)
-        {
-            end = std::stoll(replaceAll(spl[2], ",", "")) - 1;
+            std::vector<std::string> second_split;
+            split(spl[1], second_split, "-");
+
+            start = std::stoll(replaceAll(second_split[0], ",", "")) - 1;
+            if (second_split.size() >= 2){
+                end = std::stoll(replaceAll(second_split[1], ",", "")) - 1;
+            }
         }
     }
 
