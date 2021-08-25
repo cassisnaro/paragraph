@@ -55,7 +55,25 @@ def load_graph_description(args):
                     and os.path.isfile(converted_json_path) \
                     and os.path.exists(vcf_with_event_ids_path) \
                     and os.path.isfile(vcf_with_event_ids_path):
-                logging.info("Variants file already exist, skipping conversion ")
+                logging.info("although input as vcf, variants.json.gz and variants.vcf.gz present, using those")
+
+                json_file = gzip.open("variants.json.gz", 'r')
+                event_list = json.load(json_file)
+                num_converted_event = 0
+                # if JSON has no graph description
+                for event in event_list:
+                    if "graph" not in event:
+                        if "nodes" not in event and "edges" not in event:
+                            try:
+                                event["type"], event["graph"] = make_graph(args.reference, event)
+                            except Exception:  # pylint: disable=W0703
+                                logging.error("Failed to make graph for JSON event.")
+                                traceback.print_exc(file=LoggingWriter(logging.ERROR))
+                                raise
+                            num_converted_event += 1
+                if num_converted_event:
+                    logging.info("Constructed graph for %d events in JSON.", num_converted_event)
+                json_file.close()
             else:
 
                 header, records, event_list = convert_vcf_to_json(args, alt_paths=True)
