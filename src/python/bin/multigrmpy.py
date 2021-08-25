@@ -49,17 +49,24 @@ def load_graph_description(args):
         logging.info("Input is a vcf. Converting to JSON with graph description...")
         try:
             converted_json_path = os.path.join(args.output, "variants.json.gz")
-            header, records, event_list = convert_vcf_to_json(args, alt_paths=True)
-
             vcf_with_event_ids_path = os.path.join(args.output, "variants.vcf.gz")
-            logging.info("Saving: %s.", vcf_with_event_ids_path)
-            with pysam.VariantFile(vcf_with_event_ids_path, 'w', header=header) as vcf_with_event_ids_file:
-                for record in [record for record_block in records for record in record_block]:
-                    vcf_with_event_ids_file.write(record)
 
-            logging.info("Saving: %s.", converted_json_path)
-            with gzip.open(converted_json_path, "wt") as converted_json_file:
-                json.dump(event_list, converted_json_file, sort_keys=True, indent=4, separators=(',', ': '))
+            if os.path.exists(converted_json_path) \
+                    and os.path.isfile(converted_json_path) \
+                    and os.path.exists(vcf_with_event_ids_path) \
+                    and os.path.isfile(vcf_with_event_ids_path):
+                logging.info("Variants file already exist, skipping conversion ")
+            else:
+
+                header, records, event_list = convert_vcf_to_json(args, alt_paths=True)
+                logging.info("Saving: %s.", vcf_with_event_ids_path)
+                with pysam.VariantFile(vcf_with_event_ids_path, 'w', header=header) as vcf_with_event_ids_file:
+                    for record in [record for record_block in records for record in record_block]:
+                        vcf_with_event_ids_file.write(record)
+
+                logging.info("Saving: %s.", converted_json_path)
+                with gzip.open(converted_json_path, "wt") as converted_json_file:
+                    json.dump(event_list, converted_json_file, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception:  # pylint: disable=W0703
             logging.error("VCF to JSON conversion failed.")
             traceback.print_exc(file=LoggingWriter(logging.ERROR))
