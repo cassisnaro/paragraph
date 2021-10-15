@@ -104,6 +104,7 @@ def convert_vcf(vcf,
             graphUtils.add_graph(graph, chromGraph)
     finally:
         os.remove(indexed_vcf.name)
+        os.remove(indexed_vcf.name+'.csi')
 
     graph.target_regions = target_regions or graph.get_reference_regions()
     graphUtils.add_source_sink(graph)
