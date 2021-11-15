@@ -4269,7 +4269,7 @@ JSONCPP_STRING valueToString(double value, bool useSpecialFloats, unsigned int p
   int len = -1;
 
   char formatString[15];
-  snprintf(formatString, sizeof(formatString), "%%.%ug", precision);
+  snprintf(formatString, sizeof(formatString), "%%.%uf", precision);
 
   // Print into the buffer. We need not request the alternative representation
   // that always has a decimal point because JSON doesn't distinguish the
