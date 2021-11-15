@@ -577,7 +577,7 @@ std::unique_ptr<DepthInfo> BamReader::estimateDepth(std::string const& region)
     dp_info->read_length_unique = fabs(variance(read_length_accumulator)) < std::numeric_limits<double>::epsilon();
     dp_info->read_length = static_cast<size_t>(median(read_length_accumulator));
     dp_info->read_count = static_cast<size_t>(count(read_length_accumulator));
-    dp_info->depth_median = round(median(depth_accumulator) * 100) / 100;
+    dp_info->depth_median = round(median(depth_accumulator) * 1000000) / 1000000;
     dp_info->depth_variance = round(variance(depth_accumulator) * 100 / 100);
 
     if (!converged && !all_finished)
