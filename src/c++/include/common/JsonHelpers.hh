@@ -101,7 +101,7 @@ static inline Json::Value getJSON(std::string const& file_or_value)
  * Write a Json::Value object to string
  * indent = false also suppresses line breaks
  */
-static inline std::string writeJson(Json::Value const& val, bool indent = true, int float_precision = 5)
+static inline std::string writeJson(Json::Value const& val, bool indent = true, int float_precision = 15)
 {
     Json::StreamWriterBuilder wBuilder;
     wBuilder["precision"] = float_precision;
