@@ -66,7 +66,7 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         assert((*in_graph)["edges"].type() == Json::ValueType::arrayValue);
     }
 
-    LOG()->critical("Iterating over nodes", graphPath);
+    LOG()->critical("Iterating over nodes");
     std::map<string, NodeId> node_map;
     for (NodeId i = 0; i < (*in_graph)["nodes"].size(); ++i)
     {
@@ -131,32 +131,32 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         }
     }
 
-    LOG()->critical("Iterating over edges {}", name);
+    LOG()->critical("Iterating over edges");
     for (size_t i = 0; i < (*in_graph)["edges"].size(); ++i)
     {
-        LOG()->critical("Iterating over edge {} for {}", i, name);
+        LOG()->critical("Iterating over edge {}", i);
 
         auto const& in_e = (*in_graph)["edges"][(int)i];
         assert(node_map.count(in_e["from"].asString()));
         assert(node_map.count(in_e["to"].asString()));
-        LOG()->critical("Accessing from node through {} for {}", in_e["from"].asString(), name);
+        LOG()->critical("Accessing from node through {}", in_e["from"].asString());
         const auto from_node = node_map[in_e["from"].asString()];
-        LOG()->critical("Accessing to node through {} for {}", in_e["to"].asString(), name);
+        LOG()->critical("Accessing to node through {}", in_e["to"].asString());
         const auto to_node = node_map[in_e["to"].asString()];
 
 
 
         result.addEdge(from_node, to_node);
 
-        LOG()->critical("Iterating over sequences of in_e {}", name);
+        LOG()->critical("Iterating over sequences of in_e");
         for (auto& sequence : in_e["sequences"])
         {
             result.addLabelToEdge(from_node, to_node, sequence.asString());
         }
-        LOG()->critical("Iterated over sequences of in_e {}", name);
+        LOG()->critical("Iterated over sequences of in_e");
     }
 
-    LOG()->critical("Node labels Iterating over nodes {}", name);
+    LOG()->critical("Node labels Iterating over nodes");
     // Node label shortcut: add label to all in and out edges
     for (NodeId i = 0; i < (*in_graph)["nodes"].size(); ++i)
     {
@@ -165,17 +165,17 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         {
             for (auto h : result.predecessors(i))
             {
-                LOG()->critical("Node labels predesessor {}", name);
+                LOG()->critical("Node labels predesessor");
                 result.addLabelToEdge(h, i, sequence.asString());
             }
             for (auto j : result.successors(i))
             {
-                LOG()->critical("Node labels successor {}", name);
+                LOG()->critical("Node labels successor ");
                 result.addLabelToEdge(i, j, sequence.asString());
             }
         }
     }
-    LOG()->critical("returning result {}", name);
+    LOG()->critical("returning result ");
     return result;
 }
 
