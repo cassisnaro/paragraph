@@ -46,6 +46,7 @@ def load_graph_description(args):
         file_type = os.path.splitext(os.path.splitext(args.input)[0])[1]
         extension = file_type + ".gz"
     if extension == ".vcf" or extension == ".vcf.gz":
+        logging.warning("Input is a vcf. Converting to JSON with graph description...")
         logging.info("Input is a vcf. Converting to JSON with graph description...")
         try:
             converted_json_path = os.path.join(args.output, "variants.json.gz")
@@ -56,6 +57,7 @@ def load_graph_description(args):
                     and os.path.exists(vcf_with_event_ids_path) \
                     and os.path.isfile(vcf_with_event_ids_path):
                 logging.info("although input as vcf, variants.json.gz and variants.vcf.gz present, using those")
+                logging.warning("although input as vcf, variants.json.gz and variants.vcf.gz present, using those")
 
                 json_file = gzip.open("variants.json.gz", 'r')
                 event_list = json.load(json_file)
@@ -75,7 +77,7 @@ def load_graph_description(args):
                     logging.info("Constructed graph for %d events in JSON.", num_converted_event)
                 json_file.close()
             else:
-
+                logging.warning("about to convert")
                 header, records, event_list = convert_vcf_to_json(args, alt_paths=True)
                 logging.info("Saving: %s.", vcf_with_event_ids_path)
                 with pysam.VariantFile(vcf_with_event_ids_path, 'w', header=header) as vcf_with_event_ids_file:

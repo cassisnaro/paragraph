@@ -20,3 +20,4 @@ cppcheck-result
 /.project
 /.pydevproject
 /src/python/.env
+/CMakeFiles/

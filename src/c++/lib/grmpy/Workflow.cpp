@@ -164,6 +164,7 @@ void Workflow::genotypeGraphs(
             }
             common::unlock_guard<std::mutex> unlock(mutex_);
 
+            LOG()->critical("Working on genotyping {} / {}", graphIndex + 1, alignedSamples_.size());
             const std::string& graphSpecPath = graphSpecPaths_.empty() ? std::string() : graphSpecPaths_.at(graphIndex);
             output = countAndGenotype(graphSpecPath, referencePath_, genotypingParameterPath_, *ourGraphSamples);
             if (!outputFolderPath_.empty())

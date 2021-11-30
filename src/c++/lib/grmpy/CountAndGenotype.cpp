@@ -49,9 +49,10 @@ Json::Value countAndGenotype(
 {
     LOG()->info("Running genotyper");
     // Initialize walkable graph
+    LOG()->critical("Working on graphPath {}", graphPath);
     Json::Value root = graphPath.empty() ? samples.front().get_alignment_data() : common::getJSON(graphPath);
     graphtools::Graph graph = grm::graphFromJson(root, referencePath, true);
-
+    LOG()->critical("Loaded graphPath {}", graphPath);
     unsigned int male_ploidy = 2;
     unsigned int female_ploidy = 2;
 
@@ -71,17 +72,23 @@ Json::Value countAndGenotype(
         }
     }
 
+    LOG()->critical("For graphPath {} setting some parameters", graphPath);
+
     genotyping::GraphBreakpointGenotyper graph_genotyper(male_ploidy, female_ploidy);
     graph_genotyper.reset(&graph);
 
     graph_genotyper.setParameters(genotypingParameterPath);
+
+    LOG()->critical("For graphPath {} adding samples", graphPath);
 
     for (const genotyping::SampleInfo& sample_info : samples)
     {
         graph_genotyper.addAlignment(sample_info);
     }
 
+    LOG()->critical("For graphPath {} retrieving genotypes", graphPath);
     Json::Value ret = graph_genotyper.getGenotypes();
+    LOG()->critical("For graphPath {} retrieved genotypes", graphPath);
 
     LOG()->info("Done running genotyper");
     return ret;

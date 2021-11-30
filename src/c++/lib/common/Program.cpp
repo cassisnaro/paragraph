@@ -94,12 +94,17 @@ Options::Action Options::parse(const char* moduleName, int argc, const char* con
 #endif
             // Split the file content
             boost::char_separator<char> sep(" \n\r");
+            std::cerr << "Doing response file Contents" << std::endl;
             std::string ResponsefileContents(ss.str());
+            std::cerr << "Done response file Contents" << std::endl;
             boost::tokenizer<boost::char_separator<char>> tok(ResponsefileContents, sep);
+            std::cerr << "Done tok" << std::endl;
             std::vector<std::string> args;
             copy(tok.begin(), tok.end(), std::back_inserter(args));
+            std::cerr << "Done copy" << std::endl;
             // Parse the file and store the options
             bpo::store(bpo::command_line_parser(args).options(allOptions).run(), vm_);
+            std::cerr << "Done store" << std::endl;
         }
         else
         {
@@ -116,7 +121,9 @@ Options::Action Options::parse(const char* moduleName, int argc, const char* con
             return VERSION;
         }
         initLogging(moduleName, logFile().c_str(), logAsync(), logLevel().c_str());
+        std::cerr << "doing post process" << std::endl;
         postProcess(vm_);
+        std::cerr << "done post process" << std::endl;
     }
     catch (const boost::program_options::multiple_values& e)
     {

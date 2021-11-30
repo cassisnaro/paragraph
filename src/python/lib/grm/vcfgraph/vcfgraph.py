@@ -145,6 +145,7 @@ class VCFGraph:
         :param allele_graph: Use all alleles (from individual VCF entries), rather than haplotypes (from VCF samples)
         :param varId: Globally unique ID to use for this variant (e.g. vcf.id if not None)
         """
+        logging.warning("Working on record %s:%d ", vcf.chrom, vcf.pos)
         if not allele_graph:
             try:
                 samples = {s.name: s.alleles[0] for s in vcf.samples.values() if None not in s.alleles}
@@ -214,6 +215,7 @@ class VCFGraph:
                     if vcf.ref.upper() != ref_sequence:
                         logging.warning("%s:%d Genome REF is different from VCF. Use genome REF.", vcf.chrom, vcf.pos)
                 self.add_alt(vcf.pos, vcf.stop, ref_sequence, alt, alt_samples, refSamples)
+        logging.warning("Worked successfully on record %s:%d ", vcf.chrom, vcf.pos)
 
     def add_ref_support(self, start, end, haplos=(), alleles=None):
         """ Tag a piece of reference with a haplotype

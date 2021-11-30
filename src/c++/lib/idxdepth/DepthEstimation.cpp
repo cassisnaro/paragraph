@@ -114,6 +114,16 @@ Json::Value estimateDepths(Parameters const& parameters)
     if (both_chromosomes.size() != reference_chromosomes.size())
     {
         LOG()->warn("BAM header only has a subset of the reference chromosomes -- please make sure they match!");
+        for(const std::string& reference_in_both_chromosomes : both_chromosomes){
+            if(reference_chromosomes.count(reference_in_both_chromosomes) != 1){
+                LOG()->warn("Issue with sequence "+reference_in_both_chromosomes+" present in both chromosomes.");
+            }
+        }
+        for(const std::string& reference_in_reference_chromosomes : reference_chromosomes){
+            if(both_chromosomes.count(reference_in_reference_chromosomes) != 1){
+                LOG()->warn("Issue with sequence " +reference_in_reference_chromosomes+" present in reference chromosomes.");
+            }
+        }
     }
 
     std::map<std::string, size_t> reads_per_chromosome;
