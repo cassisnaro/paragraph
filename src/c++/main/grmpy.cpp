@@ -250,7 +250,7 @@ static void runGrmpy(const Options& options)
         options.sample_threads, options.max_reads_per_event, options.bad_align_frac, options.path_sequence_matching,
         options.graph_sequence_matching, options.klib_sequence_matching, options.kmer_sequence_matching,
         options.bad_align_uniq_kmer_len, options.alignment_output_path, options.infer_read_haplotypes);
-    std::cerr << "starting workflow" << std::endl
+    std::cerr << "starting workflow" << std::endl;
     grmpy::Workflow workflow(
         options.graph_spec_paths, options.genotyping_parameter_path, options.manifest, options.output_file_path,
         options.output_folder_path, options.gzip_output, parameters, options.reference_path, options.progress);
