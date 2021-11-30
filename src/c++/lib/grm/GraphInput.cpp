@@ -66,6 +66,7 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         assert((*in_graph)["edges"].type() == Json::ValueType::arrayValue);
     }
 
+    LOG()->critical("Iterating over nodes", graphPath);
     std::map<string, NodeId> node_map;
     for (NodeId i = 0; i < (*in_graph)["nodes"].size(); ++i)
     {
@@ -75,6 +76,7 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         assert(!node_map.count(name));
         node_map[name] = i;
         result.setNodeName(i, name);
+        LOG()->critical("node name {}", name);
 
         string uc_name = name;
         common::stringutil::toUpper(uc_name);
@@ -83,6 +85,7 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
 
         assert(in_n.isMember("sequence") || in_n.isMember("reference") || is_source_or_sink);
 
+        LOG()->critical("node name {}, source or sinck known, now using t", name);
         if (is_source_or_sink)
         {
             result.setNodeSeq(i, "X");
@@ -96,13 +99,16 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
             string reference_sequence;
             if (in_n["reference"].type() == Json::ValueType::stringValue)
             {
+                LOG()->critical("setting reference location {}", name);
                 const string reference_location = in_n["reference"].asString();
                 reference_sequence = ref.query(reference_location);
+                LOG()->critical("reference sequence location obtained {}", name);
             }
             else
             {
                 assert(in_n["reference"].type() == Json::ValueType::arrayValue);
 
+                LOG()->critical("accessing reference as list {}", name);
                 for (const auto& ref_inst : in_n["reference"])
                 {
                     assert(ref_inst.type() == Json::ValueType::stringValue);
@@ -125,21 +131,32 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         }
     }
 
+    LOG()->critical("Iterating over edges {}", name);
     for (size_t i = 0; i < (*in_graph)["edges"].size(); ++i)
     {
+        LOG()->critical("Iterating over edge {} for {}", i, name);
+
         auto const& in_e = (*in_graph)["edges"][(int)i];
         assert(node_map.count(in_e["from"].asString()));
         assert(node_map.count(in_e["to"].asString()));
+        LOG()->critical("Accessing from node through {} for {}", in_e["from"].asString(), name);
         const auto from_node = node_map[in_e["from"].asString()];
+        LOG()->critical("Accessing to node through {} for {}", in_e["to"].asString(), name);
         const auto to_node = node_map[in_e["to"].asString()];
+
+
+
         result.addEdge(from_node, to_node);
 
+        LOG()->critical("Iterating over sequences of in_e {}", name);
         for (auto& sequence : in_e["sequences"])
         {
             result.addLabelToEdge(from_node, to_node, sequence.asString());
         }
+        LOG()->critical("Iterated over sequences of in_e {}", name);
     }
 
+    LOG()->critical("Node labels Iterating over nodes {}", name);
     // Node label shortcut: add label to all in and out edges
     for (NodeId i = 0; i < (*in_graph)["nodes"].size(); ++i)
     {
@@ -148,15 +165,17 @@ Graph graphFromJson(Json::Value const& in, string const& reference, bool store_r
         {
             for (auto h : result.predecessors(i))
             {
+                LOG()->critical("Node labels predesessor {}", name);
                 result.addLabelToEdge(h, i, sequence.asString());
             }
             for (auto j : result.successors(i))
             {
+                LOG()->critical("Node labels successor {}", name);
                 result.addLabelToEdge(i, j, sequence.asString());
             }
         }
     }
-
+    LOG()->critical("returning result {}", name);
     return result;
 }
 

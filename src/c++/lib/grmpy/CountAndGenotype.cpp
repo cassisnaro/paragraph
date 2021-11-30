@@ -49,8 +49,9 @@ Json::Value countAndGenotype(
 {
     LOG()->info("Running genotyper");
     // Initialize walkable graph
-    LOG()->critical("Working on graphPath {}", graphPath);
+    LOG()->critical("Working on graphPath, loading json {}", graphPath);
     Json::Value root = graphPath.empty() ? samples.front().get_alignment_data() : common::getJSON(graphPath);
+    LOG()->critical("Building graph from json {}", graphPath);
     graphtools::Graph graph = grm::graphFromJson(root, referencePath, true);
     LOG()->critical("Loaded graphPath {}", graphPath);
     unsigned int male_ploidy = 2;
